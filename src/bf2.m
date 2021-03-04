@@ -27,7 +27,7 @@ for i = 1 : length(ALLEEG)
         end
         
         betterEye = 1;
-        if(eeg.epoch(j).noisePercentage_A > eeg.epoch(j).noisePercentage_B)
+        if(sum(isnan(eeg.data(1, :, j))) > sum(isnan(eeg.data(2, :, j))))
         betterEye = 2;
         end
         acc = [acc; eeg.data(betterEye, :, j)]; %#ok<AGROW>
