@@ -1,2 +1,6 @@
+/plots/*
 /resources/ET
-/src/butterflyPlot.m
+/resources/MData
+/resources/subjects.csv
+/src/peekfinder.m
+/src/functions/thresholdfilter.m
