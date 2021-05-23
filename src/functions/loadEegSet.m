@@ -12,11 +12,11 @@ function [eeg,w2h_A, w2h_B] = loadEegSet(file)
     underscoresData = eeg.setname((underscoresIndexes(1) + 1) : end);
     
     if(length(underscoresData) == 1)
-        eeg.run = 1;
-        eeg.session = str2num(underscoresData(1));
+        eeg.session = 1;
+        eeg.run = str2num(underscoresData(1));
     elseif (length(underscoresData) == 3)
-         eeg.run = 2;
-         eeg.session = str2num(underscoresData(3));
+         eeg.session = 2;
+         eeg.run = str2num(underscoresData(3));
     else
         eeg.run = 0;
         eeg.session = 0;
@@ -84,10 +84,29 @@ function [eeg,w2h_A, w2h_B] = loadEegSet(file)
     eeg.pnts = length([s(:).TotalTime]);
     eeg.times(1,:) = [s(:).TotalTime];
     
-    eeg.data(1,:) = [s(:).A_PupilDiam];
-    eeg.data(2,:) = [s(:).B_PupilDiam];
-      
+    accB = 0;
+    accA = 0;
+    for z = length([s(:).A_PupilWidth])
+        if(s(z).A_PupilWidth == 0 || s(z).A_PupilHeight == 0)
+            accA = accA + 1;
+        end
+        if(s(z).B_PupilWidth == 0 || s(z).B_PupilHeight == 0)
+            accB = accB + 1;
+        end
+    end
     
+    % check if height or width is all 0
+    if(accA < length([s(:).A_PupilHeight])*0.9) % 90% is an arbitrary value
+        eeg.data(1,:) = [s(:).A_PupilDiam];
+    end
+    if(accB < length([s(:).B_PupilHeight])*0.9)
+       if(~isempty(eeg.data))
+           eeg.data(2,:) = [s(:).B_PupilDiam];
+       else
+           eeg.data(1,:) = [s(:).B_PupilDiam];
+       end
+    end
+        
     clear s;    
 
 end

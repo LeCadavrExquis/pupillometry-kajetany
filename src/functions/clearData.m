@@ -1,30 +1,27 @@
-function [alleeg,raport] = clearData(alleeg,doSave)
-    i = 1;
-    
+function [alleeg, excludedEpochs] = clearData(alleeg)
     emptyEeg = 0;
     emptyEpochs = 0;
     missingData = 0;
     rewardsEpochs = 0;
     cuesEpochs = 0;
     
+    excludedEpochs = [];
+    
     missingDataAcceptance = 30; % in procents
     
-    
+    i = 1; 
     while(i <= length(alleeg))
        
-       j = 1;            
+       j = 1; 
        while(j <= length(alleeg(i).data(1,1,:)))
-           %empty epoch
-           if(sum(isnan(alleeg(i).data(:,:,j))) == length(alleeg(i).data(:,1,1))*length(alleeg(i).times))
-               emptyEpochs = emptyEpochs + 1;
-               alleeg(i).data(:, :, j) = [];
-               alleeg(i).epoch = [];
-               continue;
-           end
            %better eye
-           if(length(alleeg(i).data(:,1,1)) > 1 && sum(isnan(alleeg(i).data(1,:,j))) > sum(isnan(alleeg(i).data(2,:,j))))
-              % (assuming that position 1 is better => swap eyes)
+           if(length(isnan(alleeg(i).data(:,1,1))) > 1 && sum(isnan(alleeg(i).data(1,:,j))) > sum(isnan(alleeg(i).data(2,:,j))))
+              % assuming that position 1 is better
+               tmp = alleeg(i).data(1,:,j);
+               
                alleeg(i).data(1,:,j) = alleeg(i).data(2,:,j);
+               
+               alleeg(i).data(2,:,j) = tmp;
            end
            
            %missing data
@@ -34,11 +31,13 @@ function [alleeg,raport] = clearData(alleeg,doSave)
                    acc = acc + 1;
                end
            end
-           if((acc/length(alleeg(i).data(1,:,j))) > (missingDataAcceptance/100))
+           miss = 100*acc/length([alleeg(i).data(1,:,j)]);
+           if( miss > missingDataAcceptance)
+               excludedEpochs = [excludedEpochs; alleeg(i).data(1,:,j)];
+               
                alleeg(i).data(:,:,j) = [];
                alleeg(i).epoch(j) = [];
                missingData = missingData + 1;
-               disp(alleeg(i).setname + " | E:" + j);
                continue;
            end
            j = j + 1;
@@ -49,33 +48,22 @@ function [alleeg,raport] = clearData(alleeg,doSave)
        emptyEeg = emptyEeg + 1;
        disp("empty set: " + alleeg(i).setname);
        alleeg(i) = [];
-       continue
+       continue;
     end
-
-    %delete useless eyes
-    if(length(alleeg(i).data(:,1,1)) == 2)
-        alleeg(i).data(2,:,:) = [];
-    end
-          
+    
+    % good stuff
     if(alleeg(i).condition == "rewards")
        rewardsEpochs = rewardsEpochs + length(alleeg(i).data(1,1,:));
     else
        cuesEpochs = cuesEpochs + length(alleeg(i).data(1,1,:));
     end
-       
        i = i + 1;
     end
     
-    raport.emptyEeg = emptyEeg;
-    raport.emptyEpochs = emptyEpochs;
-    raport.missingData = missingData;
-    raport.rewardsEpochs = rewardsEpochs;
-    raport.cuesEpochs = cuesEpochs;
-    
-    %% TODO
-    if(doSave)
-        %handle saving to file
-    end
-
+    disp("empty eeg           = " + emptyEeg);
+    disp("empty epochs        = " + emptyEpochs);
+    disp("missing data epochs = " + missingData);
+    disp("rewards epochs      = " + rewardsEpochs);
+    disp("cues epochs         = " + cuesEpochs);   
 end
 

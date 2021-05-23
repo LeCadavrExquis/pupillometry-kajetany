@@ -1,4 +1,4 @@
-function processedData = filter_w2h(rawData, w2h)
+function processedData = filterW2H(rawData, w2h)
     w2h_UPPER_THRESHOLD = 1.3;
     w2h_LOWER_THRESHOLD = 0.7;
 
