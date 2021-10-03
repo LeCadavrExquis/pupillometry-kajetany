@@ -1,9 +1,0 @@
-/plots/*
-/libs
-/resources/ET
-/resources/MData
-/resources/subjects.csv
-/resources/Arch/*
-/src/pathdef.m
-/src/peekfinder.m
-/src/functions/thresholdfilter.m
