@@ -1,11 +1,12 @@
-function missHistogram(ALLEEG)
+%% FUNCTION missHistogram
+% display histogram of missing data percentage
+% @param runs: [run1: Int, run2: Int, ...] - selected indexes of run
+% @param condition: String - {"cues" or "rewards"}
+% example usage: missHistogram(ALLEEG, [1,2], "rewards")
+function missHistogram(ALLEEG, runs, condition)
     histData = [];
 
-    runs = [1,2];
-    condition = "cues";
-
     for set = ALLEEG
-
         if(~any(runs(:) == set.run) || ~(set.condition == condition))
             continue;
         end

@@ -1,3 +1,8 @@
+%% FUNCTION loadEegSet
+% loads data from file to eeglab structure
+% @param file: String - file path
+% @output [eeg, w2h_A, w2h_B]
+%   w2h_A/B: 1xN array<Double> - width to hight ratio
 function [eeg,w2h_A, w2h_B] = loadEegSet(file)
 
     eeg = eeg_emptyset();
@@ -41,8 +46,7 @@ function [eeg,w2h_A, w2h_B] = loadEegSet(file)
     s = table2struct(t);
     clear t    
     
-    %% loading events
-    
+    %% loading events    
     events = [];
     for i = 1:length(s)
         if s(i).ev_index == 12
@@ -50,8 +54,8 @@ function [eeg,w2h_A, w2h_B] = loadEegSet(file)
         end
     end
     %deleting marker record
-    s = s(~isnan([s.A_PupilWidth]));   
-
+    s = s(~isnan([s.A_PupilWidth]));
+    
     %% calculating PupilDiam and w2h
     w2h_B = zeros(1,length(s));
     w2h_A = zeros(1,length(s));

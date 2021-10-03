@@ -1,3 +1,6 @@
+%% FUNCTION peek
+% peek random set and epoch and displays it on the plot; 
+% press any key to reroll set and epoch;
 function peek(AllEeg)
     w = 1;
     figure();
@@ -13,10 +16,7 @@ function peek(AllEeg)
 
         hold on;
         plot(AllEeg(set).times, AllEeg(set).data(1, :, epoch));
-    %     plot(ALLEEG(set).times, ALLEEG(set).data(4, :, epoch));
         hold off;
-    %     legend(["Height", "Width"]);
-    %     axis([ALLEEG(set).times(1) ALLEEG(set).times(end) -0.02 0.02])
 
         w = waitforbuttonpress;
     end
