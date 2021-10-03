@@ -1,3 +1,5 @@
+%% FUNCTION saveToCSV
+% saves alleeg object to csv files (one for pupil data and second for corresponding subject meta data)
 function saveToCSV(AllEeg)
 eventsRewards = containers.Map(...
     ["UCSp porn", "UCSp cash", "No UCSp", "No UCSp cash", "No UCSp_porn"],...
@@ -55,8 +57,8 @@ table1 = array2table(subjects_csv,...
 table2 = array2table(data_csv, ...
 'VariableNames',"P" + string(1:180));
 
-writetable(table1,'dataInfo.csv');
-writetable(table2,'pupilData.csv');
+writetable(table1,'dataInfo_raw.csv');
+writetable(table2,'pupilData_raw.csv');
 end
 function data = meanEvent(eeg, events)
     data = [];

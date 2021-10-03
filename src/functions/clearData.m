@@ -1,4 +1,13 @@
-function [alleeg, excludedEpochs] = clearData(alleeg)
+%% FUNCTION clearData
+% removes blank and damaged trials
+% @param missingDataAcceptance: Procents - trials that have missing data
+%           percentage higher then this param will be removed
+% @output [alleeg, excludedEpochs]
+%   excludedEpochs: N x numberOfPoints array<Double> - array containing
+%          removed epochs
+%          WARNING: code will broke if the rewards and cues number of
+%          points in epoch differs (solution call this method without this output param)
+function [alleeg, excludedEpochs] = clearData(alleeg, missingDataAcceptance)
     emptyEeg = 0;
     emptyEpochs = 0;
     missingData = 0;
@@ -7,14 +16,12 @@ function [alleeg, excludedEpochs] = clearData(alleeg)
     
     excludedEpochs = [];
     
-    missingDataAcceptance = 30; % in procents
-    
     i = 1; 
     while(i <= length(alleeg))
        
        j = 1; 
        while(j <= length(alleeg(i).data(1,1,:)))
-           %better eye
+           % better eye
            if(length(isnan(alleeg(i).data(:,1,1))) > 1 && sum(isnan(alleeg(i).data(1,:,j))) > sum(isnan(alleeg(i).data(2,:,j))))
               % assuming that position 1 is better
                tmp = alleeg(i).data(1,:,j);
@@ -24,7 +31,7 @@ function [alleeg, excludedEpochs] = clearData(alleeg)
                alleeg(i).data(2,:,j) = tmp;
            end
            
-           %missing data
+           % missing data
            acc = 0; 
            for k = 1 : length(alleeg(i).data(1,:,j))
                if(isnan(alleeg(i).data(1,k,j)))
@@ -43,7 +50,7 @@ function [alleeg, excludedEpochs] = clearData(alleeg)
            j = j + 1;
        end
        
-    %empty set
+    % empty set
     if(isempty(alleeg(i).data))
        emptyEeg = emptyEeg + 1;
        disp("empty set: " + alleeg(i).setname);
